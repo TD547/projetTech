@@ -1,98 +1,85 @@
-const { Op } = require("sequelize");
+const {Op} = require("sequelize");
 const Bieres = require('../Models').Bieres;
 
 //Controleurs
 
 //récupérer toutes les bières
-exports.getAll = (req,res) => {
+exports.getAll = (req, res) => {
     Bieres.findAll()
         .then(all => res.status(200).json(all)) //200 = OK, all contient toutes les bieres
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
 
 //recuperer une biere par l'id
-exports.getByID = (req,res) => {
-    Bieres.findAll({where: {id: req.query.id}})
+exports.getByID = (req, res) => {
+    Bieres.findAll({where: {id: req.params.id}})
         .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
 
 //recuperer les biere portant le nom entré
-exports.getByName = (req,res) => {
-    Bieres.findAll({where: {name : req.params.name}})
+exports.getByName = (req, res) => {
+    Bieres.findAll({where: {name: req.query.name}})
         .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
 
 //recuperer les biere ayant un ABV en dessous ou égal à l'ABV entré
-exports.getUnderABV = (req,res) => {
-    Bieres.findAll({where: {abv : {[Op.lte] : req.params.abv}}})
+exports.getUnderABV = (req, res) => {
+    Bieres.findAll({where: {abv: {[Op.lte]: req.query.abv}}})
         .then(beer => res.status(200).json(beer)) //200 = OK, bieres trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
 
 //recuperer les biere ayant un ABV supérieur ou égal à l'ABV entré
-exports.getOverABV = (req,res) => {
-    Bieres.findAll({where: {abv : {[Op.gte] : req.query.abv}}})
+exports.getOverABV = (req, res) => {
+    Bieres.findAll({where: {abv: {[Op.gte]: req.query.abv}}})
         .then(beer => res.status(200).json(beer)) //200 = OK, bieres trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
 
 //recuperer les bieres originaires du pays entré (Commence par une majuscule)
-exports.getByPays = (req,res) => {
-    Bieres.findAll({where: {pays : req.query.pays}})
+exports.getByPays = (req, res) => {
+    Bieres.findAll({where: {pays: req.query.pays}})
         .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
 
 //recuperer les bieres créer dans la brasserie entrée grace au nom de la brasserie
-exports.getByBrewerName = (req,res) => {
-    Bieres.findAll({where: {brewer : req.query.brewer}})
+exports.getByBrewerName = (req, res) => {
+    Bieres.findAll({where: {brewer: req.query.brewer}})
         .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
 
 //recuperer les bieres créer dans la brasserie entrée grace à l'ID de la brasserie
-exports.getByBrewerID = (req,res) => {
-    Bieres.findAll({where: {brewery_id : req.query.brewery_id}})
+exports.getByBrewerID = (req, res) => {
+    Bieres.findAll({where: {brewery_id: req.params.brewery_id}})
         .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
 
 // Ajouter une bière
 exports.addBeer = (req, res) => {
-        Bieres.create({
-            brewery_id: req.body.brewery_id,
-            name: req.body.name,
-            abv: req.body.abv,
-            description: req.body.description,
-            brewer: req.body.brewer,
-            pays: req.body.pays
-        }).then(() => {
+    Bieres.create({
+        brewery_id: req.body.brewery_id,
+        name: req.body.name,
+        abv: req.body.abv,
+        description: req.body.description,
+        brewer: req.body.brewer,
+        pays: req.body.pays
+    }).then(() => {
             res.status(201).json()
-        }).catch(err => res.status(500).json(err))
-    }
+        }).catch(err => {
+        console.log(err.message)
+        res.status(500).json(err)
+    })
+}
 
 //supprimer une biere
 exports.deleteBeer = (req, res) => {
-        Bieres.destroy({where: {id: req.params.id}})
-            .then(res.status(200)) //200 = Ok biere supprimee
-            .catch(err => {
-                if (err) {
-                    res.status(500).json(err) //500 = erreur
-                } else {
-                    res.status(404).json({error: 'Biere non trouvee'}) //404 = Biere non trouvee
-                }
-            })
-    }
-
-// Modifier l'id de la brasserie d'une biere (il n'y a pas de vérification pour regarder si le brewery_id correspond bien à brewer)
-exports.updateBreweryID = (req,res) => {
-    Bieres.findAll({where: {id: req.params.id}})
-        .then(biere => {
-            biere.brewery_id = req.body.brewery_id
-            biere.save().then(() => res.status(200)) //200 = Ok biere modifier
-        })
+    Bieres.destroy({where: {id: req.params.id}})
+        .then(res.status(200)) //200 = Ok biere supprimee
         .catch(err => {
             if (err) {
                 res.status(500).json(err) //500 = erreur
@@ -103,7 +90,7 @@ exports.updateBreweryID = (req,res) => {
 }
 
 // Modifier le nom d'une biere
-exports.updateName = (req,res) => {
+exports.updateName = (req, res) => {
     Bieres.findAll({where: {id: req.params.id}})
         .then(biere => {
             biere.name = req.body.name
@@ -119,7 +106,7 @@ exports.updateName = (req,res) => {
 }
 
 // Modifier l'abv d'une biere
-exports.updateABV = (req,res) => {
+exports.updateABV = (req, res) => {
     Bieres.findAll({where: {id: req.params.id}})
         .then(biere => {
             biere.abv = req.body.abv
@@ -135,7 +122,7 @@ exports.updateABV = (req,res) => {
 }
 
 // Modifier la description d'une biere
-exports.updateDescription = (req,res) => {
+exports.updateDescription = (req, res) => {
     Bieres.findAll({where: {id: req.params.id}})
         .then(biere => {
             biere.description = req.body.description
@@ -151,7 +138,7 @@ exports.updateDescription = (req,res) => {
 }
 
 // Modifier la brasserie d'une biere (il n'y a pas de vérification pour regarder si le brewery_id correspond bien à brewer)
-exports.updateBrewer = (req,res) => {
+exports.updateBrewer = (req, res) => {
     Bieres.findAll({where: {id: req.params.id}})
         .then(biere => {
             biere.brewer = req.body.brewer
@@ -167,7 +154,7 @@ exports.updateBrewer = (req,res) => {
 }
 
 // Modifier le pays d'origne d'une biere
-exports.updatePays = (req,res) => {
+exports.updatePays = (req, res) => {
     Bieres.findAll({where: {id: req.params.id}})
         .then(biere => {
             biere.pays = req.body.pays
