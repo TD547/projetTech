@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const Bieres = require('../Models').Bieres;
 
 //Controleurs
@@ -9,14 +10,57 @@ exports.getAll = (req,res) => {
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
 
-//recuperer une biere
-exports.getOne = (req,res) => {
+//recuperer une biere par l'id
+exports.getByID = (req,res) => {
     Bieres.findOne({where: {id: req.params.id}})
         .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
+
+//recuperer les biere portant le nom entré
+exports.getByName = (req,res) => {
+    Bieres.findAll({where: {name : req.params.name}})
+        .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
+        .catch(err => res.status(500).json(err)) //500 = erreur
+}
+
+//recuperer les biere ayant un ABV en dessous ou égal à l'ABV entré
+exports.getUnderABV = (req,res) => {
+    Bieres.findAll({where: {abv : {[Op.lte] : req.params.abv}}})
+        .then(beer => res.status(200).json(beer)) //200 = OK, bieres trouvee
+        .catch(err => res.status(500).json(err)) //500 = erreur
+}
+
+//recuperer les biere ayant un ABV supérieur ou égal à l'ABV entré
+exports.getOverABV = (req,res) => {
+    Bieres.findAll({where: {abv : {[Op.gte] : req.params.abv}}})
+        .then(beer => res.status(200).json(beer)) //200 = OK, bieres trouvee
+        .catch(err => res.status(500).json(err)) //500 = erreur
+}
+
+//recuperer les bieres originaires du pays entré (Commence par une majuscule)
+exports.getByPays = (req,res) => {
+    Bieres.findAll({where: {pays : req.params.pays}})
+        .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
+        .catch(err => res.status(500).json(err)) //500 = erreur
+}
+
+//recuperer les bieres créer dans la brasserie entrée grace au nom de la brasserie
+exports.getByBrewerName = (req,res) => {
+    Bieres.findAll({where: {brewer : req.params.brewer}})
+        .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
+        .catch(err => res.status(500).json(err)) //500 = erreur
+}
+
+//recuperer les bieres créer dans la brasserie entrée grace à l'ID de la brasserie
+exports.getByBrewerID = (req,res) => {
+    Bieres.findAll({where: {brewery_id : req.params.brewery_id}})
+        .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
+        .catch(err => res.status(500).json(err)) //500 = erreur
+}
+
 // Ajouter une bière
-    exports.addBeer = (req, res) => {
+exports.addBeer = (req, res) => {
         Bieres.create({
             brewery_id: req.body.brewery_id,
             name: req.body.name,
@@ -30,14 +74,14 @@ exports.getOne = (req,res) => {
     }
 
 //supprimer une biere
-    exports.deleteBeer = (req, res) => {
+exports.deleteBeer = (req, res) => {
         Bieres.destroy({where: {id: req.params.id}})
             .then(res.status(200)) //200 = Ok biere supprimee
             .catch(err => {
                 if (err) {
                     res.status(500).json(err) //500 = erreur
                 } else {
-                    res.status(404).json({error: 'Biere non trouvee'}) //400 = Biere non trouvee
+                    res.status(404).json({error: 'Biere non trouvee'}) //404 = Biere non trouvee
                 }
             })
     }
@@ -53,7 +97,7 @@ exports.updateBreweryID = (req,res) => {
             if (err) {
                 res.status(500).json(err) //500 = erreur
             } else {
-                res.status(404).json({error: 'Biere non trouvee'}) //400 = Biere non trouvee
+                res.status(404).json({error: 'Biere non trouvee'}) //404 = Biere non trouvee
             }
         })
 }
@@ -69,7 +113,7 @@ exports.updateName = (req,res) => {
             if (err) {
                 res.status(500).json(err) //500 = erreur
             } else {
-                res.status(404).json({error: 'Biere non trouvee'}) //400 = Biere non trouvee
+                res.status(404).json({error: 'Biere non trouvee'}) //404 = Biere non trouvee
             }
         })
 }
@@ -85,7 +129,7 @@ exports.updateABV = (req,res) => {
             if (err) {
                 res.status(500).json(err) //500 = erreur
             } else {
-                res.status(404).json({error: 'Biere non trouvee'}) //400 = Biere non trouvee
+                res.status(404).json({error: 'Biere non trouvee'}) //404 = Biere non trouvee
             }
         })
 }
@@ -101,7 +145,7 @@ exports.updateDescription = (req,res) => {
             if (err) {
                 res.status(500).json(err) //500 = erreur
             } else {
-                res.status(404).json({error: 'Biere non trouvee'}) //400 = Biere non trouvee
+                res.status(404).json({error: 'Biere non trouvee'}) //404 = Biere non trouvee
             }
         })
 }
@@ -117,7 +161,7 @@ exports.updateBrewer = (req,res) => {
             if (err) {
                 res.status(500).json(err) //500 = erreur
             } else {
-                res.status(404).json({error: 'Biere non trouvee'}) //400 = Biere non trouvee
+                res.status(404).json({error: 'Biere non trouvee'}) //404 = Biere non trouvee
             }
         })
 }
@@ -133,7 +177,7 @@ exports.updatePays = (req,res) => {
             if (err) {
                 res.status(500).json(err) //500 = erreur
             } else {
-                res.status(404).json({error: 'Biere non trouvee'}) //400 = Biere non trouvee
+                res.status(404).json({error: 'Biere non trouvee'}) //404 = Biere non trouvee
             }
         })
 }
