@@ -42,12 +42,11 @@ exports.getOne = (req,res) => {
             })
     }
 
-// Modifier la brasserie d'une biere (il n'y a pas de vérification pour regarder si le brewery_id correspond bien à brewer)
-exports.updateBrewery = (req,res) => {
+// Modifier l'id de la brasserie d'une biere (il n'y a pas de vérification pour regarder si le brewery_id correspond bien à brewer)
+exports.updateBreweryID = (req,res) => {
     Bieres.findOne({where: {id: req.params.id}})
         .then(biere => {
-            biere.brewery_id = req.body.brewery_id,
-            biere.brewer = req.body.brewer
+            biere.brewery_id = req.body.brewery_id
             biere.save().then(() => res.status(200)) //200 = Ok biere modifier
         })
         .catch(err => {
@@ -64,23 +63,6 @@ exports.updateName = (req,res) => {
     Bieres.findOne({where: {id: req.params.id}})
         .then(biere => {
             biere.name = req.body.name
-            biere.save().then(() => res.status(200)) //200 = Ok biere modifier
-        })
-        .catch(err => {
-            if (err) {
-                res.status(500).json(err) //500 = erreur
-            } else {
-                res.status(404).json({error: 'Biere non trouvee'}) //400 = Biere non trouvee
-            }
-        })
-}
-
-// Modifier la brasserie d'une biere (il n'y a pas de vérification pour regarder si le brewery_id correspond bien à brewer)
-exports.updateBrewery = (req,res) => {
-    Bieres.findOne({where: {id: req.params.id}})
-        .then(biere => {
-            biere.brewery_id = req.body.brewery_id,
-                biere.brewer = req.body.brewer
             biere.save().then(() => res.status(200)) //200 = Ok biere modifier
         })
         .catch(err => {
@@ -124,8 +106,24 @@ exports.updateDescription = (req,res) => {
         })
 }
 
+// Modifier la brasserie d'une biere (il n'y a pas de vérification pour regarder si le brewery_id correspond bien à brewer)
+exports.updateBrewer = (req,res) => {
+    Bieres.findOne({where: {id: req.params.id}})
+        .then(biere => {
+            biere.brewer = req.body.brewer
+            biere.save().then(() => res.status(200)) //200 = Ok biere modifier
+        })
+        .catch(err => {
+            if (err) {
+                res.status(500).json(err) //500 = erreur
+            } else {
+                res.status(404).json({error: 'Biere non trouvee'}) //400 = Biere non trouvee
+            }
+        })
+}
+
 // Modifier le pays d'origne d'une biere
-exports.updateDescription = (req,res) => {
+exports.updatePays = (req,res) => {
     Bieres.findOne({where: {id: req.params.id}})
         .then(biere => {
             biere.pays = req.body.pays
