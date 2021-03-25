@@ -12,7 +12,7 @@ exports.getAll = (req,res) => {
 
 //recuperer une biere par l'id
 exports.getByID = (req,res) => {
-    Bieres.findOne({where: {id: req.params.id}})
+    Bieres.findAll({where: {id: req.query.id}})
         .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
@@ -33,28 +33,28 @@ exports.getUnderABV = (req,res) => {
 
 //recuperer les biere ayant un ABV supérieur ou égal à l'ABV entré
 exports.getOverABV = (req,res) => {
-    Bieres.findAll({where: {abv : {[Op.gte] : req.params.abv}}})
+    Bieres.findAll({where: {abv : {[Op.gte] : req.query.abv}}})
         .then(beer => res.status(200).json(beer)) //200 = OK, bieres trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
 
 //recuperer les bieres originaires du pays entré (Commence par une majuscule)
 exports.getByPays = (req,res) => {
-    Bieres.findAll({where: {pays : req.params.pays}})
+    Bieres.findAll({where: {pays : req.query.pays}})
         .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
 
 //recuperer les bieres créer dans la brasserie entrée grace au nom de la brasserie
 exports.getByBrewerName = (req,res) => {
-    Bieres.findAll({where: {brewer : req.params.brewer}})
+    Bieres.findAll({where: {brewer : req.query.brewer}})
         .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
 
 //recuperer les bieres créer dans la brasserie entrée grace à l'ID de la brasserie
 exports.getByBrewerID = (req,res) => {
-    Bieres.findAll({where: {brewery_id : req.params.brewery_id}})
+    Bieres.findAll({where: {brewery_id : req.query.brewery_id}})
         .then(beer => res.status(200).json(beer)) //200 = OK, biere trouvee
         .catch(err => res.status(500).json(err)) //500 = erreur
 }
@@ -88,7 +88,7 @@ exports.deleteBeer = (req, res) => {
 
 // Modifier l'id de la brasserie d'une biere (il n'y a pas de vérification pour regarder si le brewery_id correspond bien à brewer)
 exports.updateBreweryID = (req,res) => {
-    Bieres.findOne({where: {id: req.params.id}})
+    Bieres.findAll({where: {id: req.params.id}})
         .then(biere => {
             biere.brewery_id = req.body.brewery_id
             biere.save().then(() => res.status(200)) //200 = Ok biere modifier
@@ -104,7 +104,7 @@ exports.updateBreweryID = (req,res) => {
 
 // Modifier le nom d'une biere
 exports.updateName = (req,res) => {
-    Bieres.findOne({where: {id: req.params.id}})
+    Bieres.findAll({where: {id: req.params.id}})
         .then(biere => {
             biere.name = req.body.name
             biere.save().then(() => res.status(200)) //200 = Ok biere modifier
@@ -120,7 +120,7 @@ exports.updateName = (req,res) => {
 
 // Modifier l'abv d'une biere
 exports.updateABV = (req,res) => {
-    Bieres.findOne({where: {id: req.params.id}})
+    Bieres.findAll({where: {id: req.params.id}})
         .then(biere => {
             biere.abv = req.body.abv
             biere.save().then(() => res.status(200)) //200 = Ok biere modifier
@@ -136,7 +136,7 @@ exports.updateABV = (req,res) => {
 
 // Modifier la description d'une biere
 exports.updateDescription = (req,res) => {
-    Bieres.findOne({where: {id: req.params.id}})
+    Bieres.findAll({where: {id: req.params.id}})
         .then(biere => {
             biere.description = req.body.description
             biere.save().then(() => res.status(200)) //200 = Ok biere modifier
@@ -152,7 +152,7 @@ exports.updateDescription = (req,res) => {
 
 // Modifier la brasserie d'une biere (il n'y a pas de vérification pour regarder si le brewery_id correspond bien à brewer)
 exports.updateBrewer = (req,res) => {
-    Bieres.findOne({where: {id: req.params.id}})
+    Bieres.findAll({where: {id: req.params.id}})
         .then(biere => {
             biere.brewer = req.body.brewer
             biere.save().then(() => res.status(200)) //200 = Ok biere modifier
@@ -168,7 +168,7 @@ exports.updateBrewer = (req,res) => {
 
 // Modifier le pays d'origne d'une biere
 exports.updatePays = (req,res) => {
-    Bieres.findOne({where: {id: req.params.id}})
+    Bieres.findAll({where: {id: req.params.id}})
         .then(biere => {
             biere.pays = req.body.pays
             biere.save().then(() => res.status(200)) //200 = Ok biere modifier
