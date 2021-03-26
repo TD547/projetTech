@@ -169,3 +169,60 @@ exports.updatePays = (req, res) => {
         })
 }
 
+//supprimer toutes les bieres portant le nom entré
+exports.deleteBeerByName = (req, res) => {
+    Bieres.destroy({where: {name: req.query.name}})
+        .then(res.status(200)) //200 = Ok biere supprimee
+        .catch(err => {
+            if (err) {
+                res.status(500).json(err) //500 = erreur
+            }
+        })
+}
+
+//supprimer toutes les bière brassées dans le brasserie entrée
+exports.deleteBeerByBrewer = (req, res) => {
+    Bieres.destroy({where: {brewer: req.query.brewer}})
+        .then(res.status(200)) //200 = Ok biere supprimee
+        .catch(err => {
+            if (err) {
+                res.status(500).json(err) //500 = erreur
+            }
+        })
+}
+
+//supprimer toutes les bières dans la brasserie portant l'id entré
+exports.deleteBeerByBrewerID = (req, res) => {
+    Bieres.destroy({where: {brewery_id: req.params.brewery_id}})
+        .then(res.status(200)) //200 = Ok biere supprimee
+        .catch(err => {
+            if (err) {
+                res.status(500).json(err) //500 = erreur
+            }
+        })
+}
+
+//supprimer toutes les bière qui proviennent du pays entré
+exports.deleteBeerByPays = (req, res) => {
+    Bieres.destroy({where: {pays: req.params.pays}})
+        .then(res.status(200)) //200 = Ok biere supprimee
+        .catch(err => {
+            if (err) {
+                res.status(500).json(err) //500 = erreur
+            }
+        })
+}
+
+//recuperer les biere toutes les bières sans alcool
+exports.getNonAlcoholicBeer = (req,res) => {
+    Bieres.findAll({where: {abv : 0}})
+        .then(beer => res.status(200).json(beer)) //200 = OK, bieres trouvee
+        .catch(err => res.status(500).json(err)) //500 = erreur
+}
+
+//recuperer toutes les bières qui contiennent de l'alcool
+exports.getOnlyAlcoholicBeer = (req,res) => {
+    Bieres.findAll({where: {abv : {[Op.ne] : 0}}})
+        .then(beer => res.status(200).json(beer)) //200 = OK, bieres trouvee
+        .catch(err => res.status(500).json(err)) //500 = erreur
+}
