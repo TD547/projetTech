@@ -116,9 +116,9 @@ describe("[TEST] GET route /api/bieres/addbeer", () => {
 
 //Test supprimant une biere
 describe("[TEST] GET route /api/bieres/deletebeer", () => {
-    it("Supprimer la biere avec id = 2", (done) => {
+    it("Supprimer la biere avec id = 3", (done) => {
         chai.request(app)
-            .delete("/api/bieres/deleteBeer/2")
+            .delete("/api/bieres/deleteBeer/3")
             .end((err, res) => {
                 res.should.have.status(201);
             });
